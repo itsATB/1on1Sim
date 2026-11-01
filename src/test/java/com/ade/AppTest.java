@@ -17,7 +17,8 @@ public class AppTest {
 
         try {
             System.setIn(new ByteArrayInputStream(
-                    "not a number\n4\n1\n2\n3\n0\n".getBytes(StandardCharsets.UTF_8)));
+                    "not a number\n4\n1\n1\n2\n3\n0\n2\n3\n0\n"
+                            .getBytes(StandardCharsets.UTF_8)));
             System.setOut(new PrintStream(output, true, StandardCharsets.UTF_8));
             App.main(new String[0]);
         } finally {
@@ -28,7 +29,13 @@ public class AppTest {
         String result = output.toString(StandardCharsets.UTF_8);
         assertTrue(result.contains("Welcome to the 1-on-1 Basketball Game Simulator!"));
         assertTrue(result.contains("Invalid choice. Please enter an integer between 0 and 3."));
-        assertTrue(result.contains("Player roster management is not implemented yet."));
+        assertTrue(result.contains("--- Player Roster Menu ---"));
+        assertTrue(result.contains("1. View player roster"));
+        assertTrue(result.contains("2. Add new player"));
+        assertTrue(result.contains("3. Delete player"));
+        assertTrue(result.contains("Viewing the player roster is not implemented yet."));
+        assertTrue(result.contains("Adding a new player is not implemented yet."));
+        assertTrue(result.contains("Deleting a player is not implemented yet."));
         assertTrue(result.contains("Game simulation is not implemented yet."));
         assertTrue(result.contains("Player roster export is not implemented yet."));
         assertTrue(result.contains("Exiting program. Goodbye!"));
