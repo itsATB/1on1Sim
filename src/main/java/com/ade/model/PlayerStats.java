@@ -101,4 +101,22 @@ public class PlayerStats {
     private static boolean isValidRating(int rating) {
         return rating >= 1 && rating <= 99;
     }
+
+    @Override
+    public String toString() {
+        return "Stats: {" +
+                "3pt Shot:" + threePointShot +
+                ", Mid-Range Shot:" + midRangeShot +
+                ", Layup:" + layup +
+                ", Ball Handling:" + ballHandling +
+                ", Inside Defense:" + insideDefense +
+                ", Outside Defense:" + outsideDefense +
+                ", Block:" + block +
+                ", Steal:" + steal +
+                ", Speed:" + speed +
+                ", Agility:" + agility +
+                ", Stamina:" + stamina +
+                ", Vertical:" + vertical +
+                '}';
+    }
 }

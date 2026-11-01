@@ -37,4 +37,14 @@ public class Player {
             throw new IllegalStateException("Player stats must all be between 1 and 99.");
         }
     }
+
+    @Override
+    public String toString() {
+        return "[" +
+                "#" + playerNumber +        
+                ", Name: '" + name + '\'' +
+                ", Height(in.): " + height +
+                ", \n" + stats +
+                ']';
+    }
 }
