@@ -2,14 +2,19 @@ package com.ade.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.ade.model.Player;
+import com.ade.repository.PlayerRepository;
 
 public class PlayerService {
+	private final PlayerRepository playerRepository;
 	private final List<Player> players;
 
-	public PlayerService() {
-		this.players = new ArrayList<>();
+	public PlayerService(PlayerRepository playerRepository) {
+		this.playerRepository = Objects.requireNonNull(playerRepository, "Player repository cannot be null.");
+		this.players = new ArrayList<>(Objects.requireNonNull(
+				playerRepository.loadPlayers(), "Player repository returned a null list."));
 	}
 
 	public List<Player> getAllPlayers() {
@@ -55,6 +60,11 @@ public class PlayerService {
 	}
 
 	public void saveChanges() {
+		playerRepository.savePlayers(new ArrayList<>(players));
+	}
+
+	public void exportPlayers() {
+		playerRepository.exportPlayers(new ArrayList<>(players));
 	}
 
 	private int findPlayerIndex(String playerNumber) {

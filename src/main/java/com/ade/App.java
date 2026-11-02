@@ -1,17 +1,19 @@
 package com.ade;
 
 import java.util.Scanner;
-import java.util.List;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.ade.model.Player;
 import com.ade.model.PlayerStats;
+import com.ade.repository.CsvPlayerRepository;
 import com.ade.service.GameService;
 import com.ade.service.PlayerService;
 
 public class App {
     
-    public static PlayerService playerService = new PlayerService();
+    public static PlayerService playerService = new PlayerService(
+        new CsvPlayerRepository(getPlayerRosterFilePath()));
     public static GameService gameService = new GameService();
     
     public static void main(String[] args) {
@@ -19,8 +21,6 @@ public class App {
         System.out.println("--------------------------------------------------");
         System.out.println("Welcome to the 1-on-1 Basketball Game Simulator!");
         System.out.println("--------------------------------------------------");
-
-        initializeData(); // Add some sample data
 
         boolean running = true;
         while (running) {
@@ -42,6 +42,7 @@ public class App {
 
             switch (choice) {
                 case 0 -> {
+                    playerService.saveChanges();
                     System.out.println("Exiting program. Goodbye!");
                     running = false;
                 }
@@ -107,7 +108,7 @@ public class App {
     private static void viewPlayerRoster() {
         System.out.println("\n--- Player Roster ---");
         for (Player player : playerService.getAllPlayers()) {
-            System.out.println(player);
+            System.out.println(player+"\n");
         }
     }
 
@@ -207,13 +208,26 @@ public class App {
 
     private static void exportPlayerRoster() {
         System.out.println("\n--- Exporting Player Roster ---\n");
+        try {
+            playerService.exportPlayers();
+            System.out.println("-- Player roster exported to PlayerRosterExport.txt successfully!\n");
+        } catch (IllegalStateException exception) {
+            System.out.println("Error exporting player roster: " + exception.getMessage());
+        }
+    }
+
+    private static String getPlayerRosterFilePath() {
+        if (Files.isRegularFile(Path.of("pom.xml"))) {
+            return Path.of("storage", "PlayerRosterDB.csv").toString();
+        }
+        return Path.of("1on1Sim", "storage", "PlayerRosterDB.csv").toString();
     }
 
     private static void initializeData() {
         // Create sample players and add them to the roster
         Player player1 = new Player(23, "Lebron James", 81, new PlayerStats(80, 83, 97, 84, 74, 74, 57, 46, 87, 84, 88, 89));
         Player player2 = new Player(30, "Stephen Curry", 74, new PlayerStats(99, 94, 95, 97, 30, 69, 51, 49, 83, 84, 98, 73));
-        Player player3 = new Player(1, "Shai Gilgeous-Alexander", 78, new PlayerStats(82, 99, 98, 96, 69, 86, 62, 70, 88, 86, 98, 85));
+        Player player3 = new Player(2, "Shai Gilgeous-Alexander", 78, new PlayerStats(82, 99, 98, 96, 69, 86, 62, 70, 88, 86, 98, 85));
         playerService.addPlayer(player1);
         playerService.addPlayer(player2);
         playerService.addPlayer(player3);

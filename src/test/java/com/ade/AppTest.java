@@ -3,21 +3,40 @@ package com.ade;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.io.ByteArrayInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import com.ade.model.Player;
+import com.ade.model.PlayerStats;
+import com.ade.repository.CsvPlayerRepository;
 import com.ade.service.PlayerService;
 
 public class AppTest {
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     @Test
-    public void menuDispatchesFeaturesAndRejectsInvalidChoices() {
+    public void menuLoadsRosterAndExportsPlayerText() throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         java.io.InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
-        App.playerService = new PlayerService();
+        PlayerService originalPlayerService = App.playerService;
+        Path projectDirectory = temporaryFolder.getRoot().toPath();
+        Path databasePath = projectDirectory.resolve("storage").resolve("PlayerRosterDB.csv");
+        CsvPlayerRepository repository = new CsvPlayerRepository(databasePath.toString());
+        repository.savePlayers(List.of(
+                createPlayer(23, "Lebron James"),
+                createPlayer(30, "Stephen Curry")));
+        App.playerService = new PlayerService(repository);
 
         try {
             System.setIn(new ByteArrayInputStream(
@@ -30,6 +49,7 @@ public class AppTest {
         } finally {
             System.setIn(originalInput);
             System.setOut(originalOutput);
+            App.playerService = originalPlayerService;
         }
 
         String result = output.toString(StandardCharsets.UTF_8);
@@ -52,5 +72,16 @@ public class AppTest {
         assertTrue(result.contains("Exiting program. Goodbye!"));
         assertTrue(result.indexOf("Exiting program. Goodbye!")
             > result.indexOf("--- Exporting Player Roster ---"));
+
+        String exportedRoster = Files.readString(
+            projectDirectory.resolve("output").resolve("PlayerRosterExport.txt"), StandardCharsets.UTF_8);
+        assertTrue(exportedRoster.contains("[#23"));
+        assertTrue(exportedRoster.contains("[#30"));
+        assertTrue(exportedRoster.contains("Test Player"));
+        }
+
+        private static Player createPlayer(int playerNumber, String name) {
+        return new Player(playerNumber, name, 78,
+            new PlayerStats(50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50));
     }
 }
