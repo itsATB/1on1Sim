@@ -6,11 +6,13 @@ import java.util.ArrayList;
 
 import com.ade.model.Player;
 import com.ade.model.PlayerStats;
+import com.ade.service.GameService;
 import com.ade.service.PlayerService;
 
 public class App {
     
     public static PlayerService playerService = new PlayerService();
+    public static GameService gameService = new GameService();
     
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -44,7 +46,7 @@ public class App {
                     running = false;
                 }
                 case 1 -> manageRosterMenu(input);
-                case 2 -> simulateGame();
+                case 2 -> simulateGame(input);
                 case 3 -> exportPlayerRoster();
                 default -> displayInvalidChoice();
             }
@@ -172,8 +174,35 @@ public class App {
 
     }
 
-    private static void simulateGame() {
+    private static void simulateGame(Scanner input) {
         System.out.println("\n--- Simulate Game ---");
+        System.out.print("Enter Player 1's number: ");
+        if (!input.hasNextLine()) {
+            return;
+        }
+        String player1Number = input.nextLine().trim();
+
+        System.out.print("Enter Player 2's number: ");
+        if (!input.hasNextLine()) {
+            return;
+        }
+        String player2Number = input.nextLine().trim();
+
+        try {
+            Player player1 = playerService.getPlayerByNumber(player1Number);
+            Player player2 = playerService.getPlayerByNumber(player2Number);
+            if (player1.getPlayerNumber() == player2.getPlayerNumber()) {
+                System.out.println("Choose two different players to simulate a match.");
+                return;
+            }
+
+            System.out.println(gameService.simulateGame(player1, player2).getSummary());
+        } catch (IllegalArgumentException exception) {
+            System.out.println("Unable to start match: " + exception.getMessage());
+        }
+
+        // Reset the random generator for the next match
+        gameService.reseedRandom(); 
     }
 
     private static void exportPlayerRoster() {
@@ -182,10 +211,12 @@ public class App {
 
     private static void initializeData() {
         // Create sample players and add them to the roster
-        Player player1 = new Player(1, "John Doe", 75, new PlayerStats(80, 70, 85, 90, 88, 75, 80, 70, 85, 90, 88, 75));
-        Player player2 = new Player(2, "Jane Smith", 70, new PlayerStats(75, 80, 70, 85, 90, 88, 75, 80, 70, 85, 90, 88));
+        Player player1 = new Player(23, "Lebron James", 81, new PlayerStats(80, 83, 97, 84, 74, 74, 57, 46, 87, 84, 88, 89));
+        Player player2 = new Player(30, "Stephen Curry", 74, new PlayerStats(99, 94, 95, 97, 30, 69, 51, 49, 83, 84, 98, 73));
+        Player player3 = new Player(1, "Shai Gilgeous-Alexander", 78, new PlayerStats(82, 99, 98, 96, 69, 86, 62, 70, 88, 86, 98, 85));
         playerService.addPlayer(player1);
         playerService.addPlayer(player2);
+        playerService.addPlayer(player3);
     }
 
 }
