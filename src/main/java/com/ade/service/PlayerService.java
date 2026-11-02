@@ -80,7 +80,7 @@ public class PlayerService {
 		}
 	}
 
-	private static void validatePlayer(Player player) {
+	public static void validatePlayer(Player player) {
 		if (player == null) {
 			throw new IllegalArgumentException("Player cannot be null.");
 		}
