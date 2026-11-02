@@ -6,7 +6,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.io.ByteArrayInputStream;
+
 import org.junit.Test;
+
+import com.ade.service.PlayerService;
 
 public class AppTest {
     @Test
@@ -14,10 +17,13 @@ public class AppTest {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         java.io.InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
+        App.playerService = new PlayerService();
 
         try {
             System.setIn(new ByteArrayInputStream(
-                    "not a number\n4\n1\n1\n2\n3\n0\n2\n3\n0\n"
+                ("not a number\n4\n1\n1\n2\n3, Test Player, 77\n"
+                    + "50,50,50,50,50,50,50,50,50,50,50,50\n"
+                    + "1\n0\n2\n3\n0\n")
                             .getBytes(StandardCharsets.UTF_8)));
             System.setOut(new PrintStream(output, true, StandardCharsets.UTF_8));
             App.main(new String[0]);
@@ -33,13 +39,14 @@ public class AppTest {
         assertTrue(result.contains("1. View player roster"));
         assertTrue(result.contains("2. Add new player"));
         assertTrue(result.contains("3. Delete player"));
-        assertTrue(result.contains("Viewing the player roster is not implemented yet."));
-        assertTrue(result.contains("Adding a new player is not implemented yet."));
-        assertTrue(result.contains("Deleting a player is not implemented yet."));
-        assertTrue(result.contains("Game simulation is not implemented yet."));
-        assertTrue(result.contains("Player roster export is not implemented yet."));
+        assertTrue(result.contains("John Doe"));
+        assertTrue(result.contains("Jane Smith"));
+        assertTrue(result.contains("Player added successfully!"));
+        assertTrue(result.contains("Test Player"));
+        assertTrue(result.contains("--- Simulate Game ---"));
+        assertTrue(result.contains("--- Exporting Player Roster ---"));
         assertTrue(result.contains("Exiting program. Goodbye!"));
         assertTrue(result.indexOf("Exiting program. Goodbye!")
-                > result.indexOf("Player roster export is not implemented yet."));
+            > result.indexOf("--- Exporting Player Roster ---"));
     }
 }

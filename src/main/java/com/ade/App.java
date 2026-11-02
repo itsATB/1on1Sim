@@ -49,6 +49,7 @@ public class App {
                 default -> displayInvalidChoice();
             }
         }
+        input.close();
     }
 
     private static void displayMenu() {
@@ -86,7 +87,7 @@ public class App {
             switch (choice) {
                 case 0 -> inRosterMenu = false;
                 case 1 -> viewPlayerRoster();
-                case 2 -> addNewPlayer();
+                case 2 -> addNewPlayer(input);
                 case 3 -> deletePlayer();
                 default -> displayInvalidChoice();
             }
@@ -108,16 +109,66 @@ public class App {
         }
     }
 
-    private static void addNewPlayer() {
+    private static void addNewPlayer(Scanner input) {
         System.out.println("\n--- Adding New Player ---");
+        // Add new player based on user input for player number and name
+        System.out.print("Enter the player information in the format 'player number, name, height(in.)': \n");
+        // Read the user input and create a new player object
+        String playerInfo = input.nextLine().trim();
+        System.out.println("Enter the player's stats in the format:\n" 
+            + "'threePointShot, midRangeShot, layup, ballHandling, insideDefense, "
+            + "outsideDefense, block, steal, speed, agility, stamina, vertical'" );
+        String statsInput = input.nextLine().trim();
         
+        // Parse the player info and create a new player object
+        String[] info = playerInfo.split(",");
+        String[] stats = statsInput.split(",");
+        if (info.length == 3) {
+            try {
+                int playerNumber = Integer.parseInt(info[0].trim());
+                String playerName = info[1].trim();
+                int playerHeight = Integer.parseInt(info[2].trim());
+                if (stats.length != 12) {
+                    System.out.println("Invalid stats input. Please enter exactly 12 stats.");
+                    return;
+                }
+                int[] statsValues = new int[12];
+                for (int i = 0; i < 12; i++) {
+                    statsValues[i] = Integer.parseInt(stats[i].trim());
+                }
+                PlayerStats playerStats = new PlayerStats(
+                    statsValues[0], statsValues[1], statsValues[2], statsValues[3],
+                    statsValues[4], statsValues[5], statsValues[6], statsValues[7],
+                    statsValues[8], statsValues[9], statsValues[10], statsValues[11]
+                );
+                Player newPlayer = new Player(playerNumber, playerName, playerHeight, playerStats);
+                playerService.addPlayer(newPlayer);
+                System.out.println("-- Player added successfully!\n\n" + newPlayer);
+            } catch (NumberFormatException exception) {
+                System.out.println("Invalid player information format.");
+            } catch (IllegalArgumentException exception) {
+                System.out.println("Error adding player: " + exception.getMessage());
+            }
+
+        } else {
+            System.out.println("Invalid input format. Please enter the information in the correct format.");
+        }
+
     }
 
     private static void deletePlayer() {
-        System.out.println("\n--- Delete Player By Number ---");
         // Delete player based on player number input from the user
+        System.out.println("\n--- Delete Player By Number ---");
+
         System.out.print("Enter the player number to delete: ");
-        
+        Scanner input = new Scanner(System.in);
+        String playerNumber = input.nextLine().trim();  
+        try {
+            System.out.println("Player #" + playerNumber + " (" + playerService.getPlayerByNumber(playerNumber).getName() + ")" + " has been deleted.");
+            playerService.deletePlayer(playerNumber);
+        } catch (IllegalArgumentException exception) {
+            System.out.println("Error deleting player: " + exception.getMessage());
+        }        
 
     }
 
