@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 import com.ade.model.Player;
 import com.ade.model.PlayerStats;
+import com.ade.service.PlayerService;
 
 public class App {
     
-    //TODO: remove after player service is implemented
-    public static List<Player> playerRoster = new ArrayList<>();
+    public static PlayerService playerService = new PlayerService();
     
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -18,9 +18,7 @@ public class App {
         System.out.println("Welcome to the 1-on-1 Basketball Game Simulator!");
         System.out.println("--------------------------------------------------");
 
-        //TODO: remove after player service is implemented
         initializeData(); // Add some sample data
-        // -----------------------------------------------
 
         boolean running = true;
         while (running) {
@@ -105,7 +103,7 @@ public class App {
 
     private static void viewPlayerRoster() {
         System.out.println("\n--- Player Roster ---");
-        for (Player player : playerRoster) {
+        for (Player player : playerService.getAllPlayers()) {
             System.out.println(player);
         }
     }
@@ -117,7 +115,10 @@ public class App {
 
     private static void deletePlayer() {
         System.out.println("\n--- Delete Player By Number ---");
-        // Implementation for deleting a player would go here
+        // Delete player based on player number input from the user
+        System.out.print("Enter the player number to delete: ");
+        
+
     }
 
     private static void simulateGame() {
@@ -132,8 +133,8 @@ public class App {
         // Create sample players and add them to the roster
         Player player1 = new Player(1, "John Doe", 75, new PlayerStats(80, 70, 85, 90, 88, 75, 80, 70, 85, 90, 88, 75));
         Player player2 = new Player(2, "Jane Smith", 70, new PlayerStats(75, 80, 70, 85, 90, 88, 75, 80, 70, 85, 90, 88));
-        playerRoster.add(player1);
-        playerRoster.add(player2);
+        playerService.addPlayer(player1);
+        playerService.addPlayer(player2);
     }
 
 }
