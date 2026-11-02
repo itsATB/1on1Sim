@@ -1,13 +1,26 @@
 package com.ade;
 
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+
+import com.ade.model.Player;
+import com.ade.model.PlayerStats;
 
 public class App {
+    
+    //TODO: remove after player service is implemented
+    public static List<Player> playerRoster = new ArrayList<>();
+    
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         System.out.println("--------------------------------------------------");
         System.out.println("Welcome to the 1-on-1 Basketball Game Simulator!");
         System.out.println("--------------------------------------------------");
+
+        //TODO: remove after player service is implemented
+        initializeData(); // Add some sample data
+        // -----------------------------------------------
 
         boolean running = true;
         while (running) {
@@ -32,24 +45,12 @@ public class App {
                     System.out.println("Exiting program. Goodbye!");
                     running = false;
                 }
-                case 1 -> viewManagePlayerRoster();
+                case 1 -> manageRosterMenu(input);
                 case 2 -> simulateGame();
                 case 3 -> exportPlayerRoster();
                 default -> displayInvalidChoice();
             }
         }
-    }
-
-    private static void viewManagePlayerRoster() {
-        System.out.println("Player roster management is not implemented yet.");
-    }
-
-    private static void simulateGame() {
-        System.out.println("Game simulation is not implemented yet.");
-    }
-
-    private static void exportPlayerRoster() {
-        System.out.println("Player roster export is not implemented yet.");
     }
 
     private static void displayMenu() {
@@ -63,4 +64,76 @@ public class App {
     private static void displayInvalidChoice() {
         System.out.println("Invalid choice. Please enter an integer between 0 and 3.");
     }
+
+    private static void manageRosterMenu(Scanner input) {
+        boolean inRosterMenu = true;
+
+        while (inRosterMenu) {
+            displayRosterMenu();
+            System.out.print("Enter your choice (0-3): ");
+
+            if (!input.hasNextLine()) {
+                return;
+            }
+
+            String userInput = input.nextLine().trim();
+            int choice;
+            try {
+                choice = Integer.parseInt(userInput);
+            } catch (NumberFormatException exception) {
+                displayInvalidChoice();
+                continue;
+            }
+
+            switch (choice) {
+                case 0 -> inRosterMenu = false;
+                case 1 -> viewPlayerRoster();
+                case 2 -> addNewPlayer();
+                case 3 -> deletePlayer();
+                default -> displayInvalidChoice();
+            }
+        }
+    }
+
+    private static void displayRosterMenu() {
+        System.out.println("\n--- Player Roster Menu ---");
+        System.out.println("1. View player roster");
+        System.out.println("2. Add new player");
+        System.out.println("3. Delete player");
+        System.out.println("0. Back to main menu");
+    }
+
+    private static void viewPlayerRoster() {
+        System.out.println("\n--- Player Roster ---");
+        for (Player player : playerRoster) {
+            System.out.println(player);
+        }
+    }
+
+    private static void addNewPlayer() {
+        System.out.println("\n--- Adding New Player ---");
+        
+    }
+
+    private static void deletePlayer() {
+        System.out.println("\n--- Delete Player By Number ---");
+        // Implementation for deleting a player would go here
+    }
+
+    private static void simulateGame() {
+        System.out.println("\n--- Simulate Game ---");
+    }
+
+    private static void exportPlayerRoster() {
+        System.out.println("\n--- Exporting Player Roster ---\n");
+    }
+
+    private static void initializeData() {
+        // Create sample players and add them to the roster
+        Player player1 = new Player(1, "John Doe", 75, new PlayerStats(80, 70, 85, 90, 88, 75, 80, 70, 85, 90, 88, 75));
+        Player player2 = new Player(2, "Jane Smith", 70, new PlayerStats(75, 80, 70, 85, 90, 88, 75, 80, 70, 85, 90, 88));
+        playerRoster.add(player1);
+        playerRoster.add(player2);
+    }
+
 }
