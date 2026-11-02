@@ -213,7 +213,7 @@ public class App {
         // Create sample players and add them to the roster
         Player player1 = new Player(23, "Lebron James", 81, new PlayerStats(80, 83, 97, 84, 74, 74, 57, 46, 87, 84, 88, 89));
         Player player2 = new Player(30, "Stephen Curry", 74, new PlayerStats(99, 94, 95, 97, 30, 69, 51, 49, 83, 84, 98, 73));
-        Player player3 = new Player(1, "Shai Gilgeous-Alexander", 78, new PlayerStats(82, 99, 98, 96, 69, 86, 62, 70, 88, 86, 98, 85));
+        Player player3 = new Player(2, "Shai Gilgeous-Alexander", 78, new PlayerStats(82, 99, 98, 96, 69, 86, 62, 70, 88, 86, 98, 85));
         playerService.addPlayer(player1);
         playerService.addPlayer(player2);
         playerService.addPlayer(player3);
