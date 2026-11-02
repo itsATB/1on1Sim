@@ -23,7 +23,7 @@ public class AppTest {
             System.setIn(new ByteArrayInputStream(
                 ("not a number\n4\n1\n1\n2\n3, Test Player, 77\n"
                     + "50,50,50,50,50,50,50,50,50,50,50,50\n"
-                    + "1\n0\n2\n3\n0\n")
+                    + "1\n0\n2\n23\n30\n3\n0\n")
                             .getBytes(StandardCharsets.UTF_8)));
             System.setOut(new PrintStream(output, true, StandardCharsets.UTF_8));
             App.main(new String[0]);
@@ -39,11 +39,15 @@ public class AppTest {
         assertTrue(result.contains("1. View player roster"));
         assertTrue(result.contains("2. Add new player"));
         assertTrue(result.contains("3. Delete player"));
-        assertTrue(result.contains("John Doe"));
-        assertTrue(result.contains("Jane Smith"));
+        assertTrue(result.contains("Lebron James"));
+        assertTrue(result.contains("Stephen Curry"));
         assertTrue(result.contains("Player added successfully!"));
         assertTrue(result.contains("Test Player"));
         assertTrue(result.contains("--- Simulate Game ---"));
+        assertTrue(result.contains("Enter Player 1's number:"));
+        assertTrue(result.contains("Enter Player 2's number:"));
+        assertTrue(result.contains("Player 1: Lebron James vs. Player 2: Stephen Curry"));
+        assertTrue(result.contains("FINAL RESULT:"));
         assertTrue(result.contains("--- Exporting Player Roster ---"));
         assertTrue(result.contains("Exiting program. Goodbye!"));
         assertTrue(result.indexOf("Exiting program. Goodbye!")

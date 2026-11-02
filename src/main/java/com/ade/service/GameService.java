@@ -14,7 +14,7 @@ public class GameService {
 	private static final double MIN_VARIANCE = -5.0;
 	private static final double MAX_VARIANCE = 5.0;
 
-	private final Random random;
+	private Random random;
 
 	public GameService() {
 		this(new Random());
@@ -23,6 +23,10 @@ public class GameService {
 	public GameService(Random random) {
 		this.random = random;
 	}
+
+    public void reseedRandom() {
+        this.random = new Random();
+    }
 
 	public MatchResult simulateGame(Player player1, Player player2) {
 		PlayerService.validatePlayer(player1);
